@@ -5,9 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <style>
+    html {
+      background-color: black;
+    }
+    canvas {
+      margin: 0 auto;
+      margin-top: 40px;
+      display: block;
+      border: 2px solid white;
+    }
+
+    #hitCanvas {
+    }
+
+    form {
+      visibility: hidden;
+    }
+  </style>
 </head>
 <body>
  <canvas id="root"></canvas> 
+ <canvas id="hitCanvas"></canvas>
+ <form id="settings">
+  <div>
+    <label>Tile dimension</label>
+    <input value="32" name="tileSize" type="number" max="64">
+   </div>
+  <div>
+    <label>World width</label>
+    <input value="20" name="width" type="number">
+   </div>
+   <div>
+    <label>Tile dimension</label>
+    <input value="16" name="height" type="number">
+   </div>
+   <button type="submit">choose settings</button>
+</form>
+  
  <script src="/dist/bundle.js"></script>
 </body>
 </html>
