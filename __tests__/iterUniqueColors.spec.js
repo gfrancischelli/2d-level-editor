@@ -2,7 +2,7 @@ var test = require("tape");
 var IterUniqueColors = require("../app/lib/iterUniqueColors").default;
 
 test("Iterate over unique colors", function(t) {
-  var iterator = IterUniqueColors(3)();
+  var iterator = IterUniqueColors(1, 3)();
   var done = false;
   var count = 0;
   while (done === false) {
