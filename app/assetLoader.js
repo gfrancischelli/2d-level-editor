@@ -1,34 +1,27 @@
 export default (async function assetLoader(assets) {
-  const loadImage = filename =>
+  const loadImage = texture =>
     new Promise((resolve, reject) => {
       const image = new Image();
-      image.src = `/assets/${filename}`;
+      image.src = texture.path;
+      const data = [texture.name, { image: image, size: texture.size }];
       image.addEventListener("error", reject);
-      image.addEventListener("load", () => resolve(image));
+      image.addEventListener("load", () => resolve(data));
     });
 
-  async function loadTexture(filename, spriteName, frame = {}) {
-    const image = await loadImage(filename);
-    return [spriteName || filename, {texture: image, frame}];
-  }
+  const imageLoaders = assets.images.map(loadImage);
 
-  function loadAtlas(atlas) {
-    const filename = atlas.meta.image;
-    const textures = Object.keys(atlas.frames);
-    const spritesLoader = textures.map(texture => 
-      loadTexture(filename, texture, atlas.frames[texture])
-    );
-    return spritesLoader
-  }
+  const images = await Promise.all(imageLoaders);
+  const textureCache = new Map(images);
 
-  const loadReducer = (acc, asset) =>
-    typeof asset === "string"
-      ? acc.push(loadImage(asset))
-      : [...acc, ...loadAtlas(asset)];
-
-  const loaders = assets.reduce(loadReducer, []);
-
-  const cache = await Promise.all(loaders);
+  const frameNames = Object.keys(assets.frames);
+  const cache = frameNames.reduce(
+    (acc, frameName) => {
+      const sprite = assets.frames[frameName];
+      sprite.texture = textureCache.get(sprite.image).image;
+      return [[frameName, sprite], ...acc]
+    },
+    []
+  );
 
   return new Map(cache);
 });
