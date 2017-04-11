@@ -7,20 +7,15 @@ function HitCanvas(width, height, tileSize, canvas) {
   canvas.height = height;
   this.tileSize = tileSize;
   this.cx = this.canvas.getContext("2d");
-  this.cx.fillStyle = "rgb(255, 0, 255)";
+  this.backgroundColor = "#ff00ff";
+  this.cx.fillStyle = this.backgroundColor;
   this.cx.fillRect(0, 0, width, height);
   this.hitMap = new Map();
-  this.iterUniqueColors = iter8bitColors();
+  this.menuHitMap = new Map();
 }
 
-HitCanvas.prototype.set = function set(textures) {
-  const { hitMap } = this;
-  textures.forEach((t, i) => {
-    const color = iterUniqueColors.next().value;
-    hcx.fillStyle = color;
-  });
-};
-
+HitCanvas.prototype.iterUniqueColors = iter8bitColors();
+  
 HitCanvas.prototype.get = function(color) {
   return this.hitMap.get(color);
 };
@@ -29,6 +24,10 @@ HitCanvas.prototype.getPixelColor = function(x, y) {
   const { data } = this.cx.getImageData(x, y, 1, 1);
   return intToHexString(data[0], data[1], data[2]);
 };
+
+HitCanvas.prototype.getMenu = function(color) {
+  return this.menuHitMap.get(color);
+}
 
 HitCanvas.prototype.drawWorldGrid = function(
   {
@@ -67,7 +66,7 @@ HitCanvas.prototype.drawWorldGrid = function(
 HitCanvas.prototype.drawMenuGrid = function(
   { iterGrid, margin = 0, textures }
 ) {
-  const { cx, hitMap, iterUniqueColors, tileSize } = this;
+  const { cx, menuHitMap, iterUniqueColors, tileSize } = this;
   const gridIterator = iterGrid();
 
   cx.save();
@@ -75,13 +74,26 @@ HitCanvas.prototype.drawMenuGrid = function(
     const color = iterUniqueColors.next().value;
     const { col, row } = gridIterator.next().value;
 
-    const x = col * tileSize + margin + margin * col;
-    const y = row * tileSize + margin + margin * row;
+    const hitWidth = texture.frame.w;
+    const hitHeight = texture.frame.h;
+
+    let x = col * tileSize + margin + margin * col;
+    let y = row * tileSize + margin + margin * row;
+
+    let currentColor = this.getPixelColor(x, y);
+
+
+    while(currentColor !== this.backgroundColor) {
+      const { col, row } = gridIterator.next().value;
+      x = col * tileSize + margin + margin * col;
+      y = row * tileSize + margin + margin * row;
+      currentColor = this.getPixelColor(x, y);
+    }
 
     cx.fillStyle = color;
-    cx.fillRect(x, y, tileSize, tileSize);
+    cx.fillRect(x, y, hitWidth, hitHeight);
 
-    hitMap.set(color, textureName);
+    menuHitMap.set(color, textureName);
   });
 
   cx.restore();
