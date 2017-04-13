@@ -1,12 +1,13 @@
 var fs = require("fs");
 var path = require("path");
 var exec = require("child_process").exec;
+var meta = require("./assets/tiles_meta");
 
 var dir = "assets";
 
 function readFileNames(directory) {
   return fs.readdirSync(directory).reduce(function(list, file) {
-    if (file === "game.assets.json") return list;
+    if (file === "game.assets.json" || file === "tiles_meta.json") return list;
     var filePath = path.join(directory, file);
     var isDir = fs.statSync(filePath).isDirectory();
     var isJson = file.slice(-4) === "json";
@@ -32,6 +33,7 @@ function getFrames(textureAtlas) {
       const asset = {
         frame: sprite.frame,
         image: imageName,
+        flags: meta[frameName],
         relativeSize: {
           x: sprite.frame.w / 16,
           y: sprite.frame.h / 16
