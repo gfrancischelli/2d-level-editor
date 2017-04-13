@@ -1,9 +1,10 @@
 # 2d Level Editor
 
-Made with ❤️ for **Legend of Bolota**
+Made with ❤️ for [**Legend of Bolota**](https://github.com/gfrancischelli/legend-of-bolota)
 
-### Instructions
-- Linux with node.js
+![Level Editor Screenshot](http://i.imgur.com/hE7myNf.jpg)
+
+---
 
 ### TODO
 - [ ] Decouple Store from WorldMap & add WorldMap object
@@ -14,5 +15,7 @@ Made with ❤️ for **Legend of Bolota**
 - [ ] Add mouse tracking obj (?)
 - [ ] Move rendering + menu + loaders to their own npm package (??)
 
-  Open folder with [fenix web server](http://fenixwebserver.com/).
-- Profit
+### Instructions
+  `yarn start`
+#### Testing
+  `yarn run test`
